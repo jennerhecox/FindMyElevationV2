@@ -1,0 +1,117 @@
+---
+// Landmark Comparison Component
+// Displays the closest landmark to the current elevation
+---
+
+<div
+  id="landmark-comparison"
+  class="w-full max-w-lg mx-auto mt-4 p-5 bg-secondary-container text-on-secondary-container rounded-lg flex items-center gap-4 opacity-0 translate-y-5 transition-all duration-400"
+  style="display: none;"
+>
+  <div class="w-24 h-24 flex-shrink-0 flex items-center justify-center bg-primary rounded-md overflow-hidden p-0" id="landmark-icon"></div>
+  <div class="flex-1 min-w-0 overflow-hidden">
+    <div class="font-semibold text-lg mb-1" id="landmark-name">Loading...</div>
+    <div class="text-base opacity-90" id="landmark-elevation"></div>
+  </div>
+</div>
+
+<style>
+  /* Keep only visibility animation class */
+  #landmark-comparison.visible {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+  }
+</style>
+
+<script>
+  import { getAllLandmarks } from '../lib/landmarks/data';
+  import { findNearbyLandmarks, formatComparisonMessage } from '../lib/landmarks/matcher';
+  import { metersToFeet, formatElevation } from '../lib/utils/units';
+
+  interface LandmarkDisplayOptions {
+    elevation: number; // in meters
+    unit?: 'meters' | 'feet';
+  }
+
+  class LandmarkDisplay {
+    private container: HTMLElement;
+    private iconElement: HTMLElement;
+    private nameElement: HTMLElement;
+    private elevationElement: HTMLElement;
+
+    constructor() {
+      this.container = document.getElementById('landmark-comparison') as HTMLElement;
+      this.iconElement = document.getElementById('landmark-icon') as HTMLElement;
+      this.nameElement = document.getElementById('landmark-name') as HTMLElement;
+      this.elevationElement = document.getElementById('landmark-elevation') as HTMLElement;
+    }
+
+    /**
+     * Display landmark comparison
+     */
+    public display(options: LandmarkDisplayOptions): void {
+      const { elevation, unit = 'meters' } = options;
+
+      // Find 15 nearby landmarks and randomly select one
+      const landmarks = getAllLandmarks();
+      const nearbyLandmarks = findNearbyLandmarks(elevation, landmarks, 15, 1000);
+
+      if (nearbyLandmarks.length === 0) {
+        // No landmark found within tolerance
+        this.container.style.display = 'none';
+        return;
+      }
+
+      // Randomly select one from the nearby landmarks
+      const randomIndex = Math.floor(Math.random() * nearbyLandmarks.length);
+      const closest = nearbyLandmarks[randomIndex];
+
+      // Display landmark icon or image
+      if ((closest as any).image_url) {
+        this.iconElement.innerHTML = `<img src="${(closest as any).image_url}" alt="${closest.name}" />`;
+      } else {
+        this.iconElement.innerHTML = closest.icon_svg;
+      }
+      this.nameElement.textContent = closest.name;
+
+      const comparisonMessage = formatComparisonMessage(elevation, closest);
+
+      // Format landmark elevation in current unit
+      const landmarkElevation = unit === 'feet'
+        ? metersToFeet(closest.elevation_meters)
+        : closest.elevation_meters;
+      const unitLabel = unit === 'feet' ? 'ft' : 'm';
+      const elevationText = `${formatElevation(landmarkElevation)}${unitLabel} elevation`;
+
+      this.elevationElement.innerHTML = `
+        <div>${comparisonMessage}</div>
+        <div style="margin-top: 0.25rem; font-size: 0.9em; opacity: 0.8;">${elevationText}</div>
+      `;
+
+      // Show with animation
+      this.container.style.display = 'flex';
+
+      // Trigger animation after a short delay
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          this.container.classList.add('visible');
+        });
+      });
+
+      console.log('Landmark comparison:', closest);
+    }
+
+    /**
+     * Hide landmark comparison
+     */
+    public hide(): void {
+      this.container.classList.remove('visible');
+      setTimeout(() => {
+        this.container.style.display = 'none';
+      }, 400);
+    }
+  }
+
+  // Export for use in main page
+  (window as any).LandmarkDisplay = LandmarkDisplay;
+</script>

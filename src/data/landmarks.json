@@ -1,0 +1,205 @@
+[
+  {
+    "name": "Dead Sea",
+    "type": "natural",
+    "elevation_meters": -430,
+    "icon_svg": "<svg viewBox='0 0 24 24' fill='currentColor'><path d='M12 2c-5.33 4.55-8 8.48-8 11.8 0 4.98 3.8 8.2 8 8.2s8-3.22 8-8.2c0-3.32-2.67-7.25-8-11.8z'/></svg>",
+    "image_url": "https://images.unsplash.com/photo-1580837119756-563d608dd119?w=200&h=200&fit=crop&q=80"
+  },
+  {
+    "name": "Amsterdam",
+    "type": "city",
+    "elevation_meters": 0,
+    "icon_svg": "<svg viewBox='0 0 24 24' fill='currentColor'><path d='M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3z'/></svg>",
+    "image_url": "https://images.unsplash.com/photo-1534351450181-ea9f78427fe8?w=200&h=200&fit=crop&q=80"
+  },
+  {
+    "name": "Statue of Liberty",
+    "type": "monument",
+    "elevation_meters": 93,
+    "icon_svg": "<svg viewBox='0 0 24 24' fill='currentColor'><path d='M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z'/></svg>",
+    "image_url": "https://images.unsplash.com/photo-1508090881037-74ef9c36f4dd?w=200&h=200&fit=crop&q=80"
+  },
+  {
+    "name": "London Eye",
+    "type": "structure",
+    "elevation_meters": 135,
+    "icon_svg": "<svg viewBox='0 0 24 24' fill='currentColor'><circle cx='12' cy='12' r='9' fill='none' stroke='currentColor' stroke-width='2'/><circle cx='12' cy='12' r='2'/></svg>",
+    "image_url": "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=200&h=200&fit=crop&q=80"
+  },
+  {
+    "name": "Great Pyramid of Giza",
+    "type": "monument",
+    "elevation_meters": 146,
+    "icon_svg": "<svg viewBox='0 0 24 24' fill='currentColor'><path d='M12 2L2 20h20L12 2z'/></svg>",
+    "image_url": "https://images.unsplash.com/photo-1572252009286-268acec5ca0a?w=200&h=200&fit=crop&q=80"
+  },
+  {
+    "name": "St. Peter's Basilica",
+    "type": "building",
+    "elevation_meters": 136,
+    "icon_svg": "<svg viewBox='0 0 24 24' fill='currentColor'><path d='M12 2l-5 7h3v11h4V9h3l-5-7z'/></svg>",
+    "image_url": "https://images.unsplash.com/photo-1531572753322-ad063cecc140?w=200&h=200&fit=crop&q=80"
+  },
+  {
+    "name": "Leaning Tower of Pisa",
+    "type": "monument",
+    "elevation_meters": 56,
+    "icon_svg": "<svg viewBox='0 0 24 24' fill='currentColor'><rect x='9' y='6' width='6' height='16' transform='rotate(-10 12 14)'/></svg>",
+    "image_url": "https://images.unsplash.com/photo-1583431221906-fba0d66e09ee?w=200&h=200&fit=crop&q=80"
+  },
+  {
+    "name": "Space Needle",
+    "type": "tower",
+    "elevation_meters": 184,
+    "icon_svg": "<svg viewBox='0 0 24 24' fill='currentColor'><path d='M12 2l-3 8h6l-3-8zm-2 8v12h4V10H10z'/></svg>",
+    "image_url": "https://images.unsplash.com/photo-1555716992-3c20600f0eb8?w=200&h=200&fit=crop&q=80"
+  },
+  {
+    "name": "Eiffel Tower",
+    "type": "tower",
+    "elevation_meters": 330,
+    "icon_svg": "<svg viewBox='0 0 24 24' fill='currentColor'><path d='M12 2l-4 8h2v12h4V10h2l-4-8z'/></svg>",
+    "image_url": "https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?w=200&h=200&fit=crop&q=80"
+  },
+  {
+    "name": "Empire State Building",
+    "type": "building",
+    "elevation_meters": 381,
+    "icon_svg": "<svg viewBox='0 0 24 24' fill='currentColor'><path d='M10 2h4v20h-4V2z'/><path d='M8 10h8v2H8z'/></svg>",
+    "image_url": "https://images.unsplash.com/photo-1583416750470-965b2707b355?w=200&h=200&fit=crop&q=80"
+  },
+  {
+    "name": "Willis Tower (Sears Tower)",
+    "type": "building",
+    "elevation_meters": 442,
+    "icon_svg": "<svg viewBox='0 0 24 24' fill='currentColor'><rect x='6' y='2' width='3' height='20'/><rect x='10' y='2' width='4' height='20'/><rect x='15' y='6' width='3' height='16'/></svg>",
+    "image_url": "https://images.unsplash.com/photo-1595605194062-ed704a6c0c24?w=200&h=200&fit=crop&q=80"
+  },
+  {
+    "name": "One World Trade Center",
+    "type": "building",
+    "elevation_meters": 541,
+    "icon_svg": "<svg viewBox='0 0 24 24' fill='currentColor'><path d='M10 2h4l2 20h-8l2-20z'/></svg>",
+    "image_url": "https://images.unsplash.com/photo-1568515387631-8b650bbcdb90?w=200&h=200&fit=crop&q=80"
+  },
+  {
+    "name": "CN Tower",
+    "type": "tower",
+    "elevation_meters": 553,
+    "icon_svg": "<svg viewBox='0 0 24 24' fill='currentColor'><circle cx='12' cy='8' r='3'/><rect x='11' y='10' width='2' height='12'/></svg>",
+    "image_url": "https://images.unsplash.com/photo-1517935706615-2717063c2225?w=200&h=200&fit=crop&q=80"
+  },
+  {
+    "name": "Burj Khalifa",
+    "type": "building",
+    "elevation_meters": 828,
+    "icon_svg": "<svg viewBox='0 0 24 24' fill='currentColor'><path d='M12 1l-2 8h1v14h2V9h1l-2-8z'/></svg>",
+    "image_url": "https://images.unsplash.com/photo-1582672060674-bc2bd808a8b5?w=200&h=200&fit=crop&q=80"
+  },
+  {
+    "name": "Mount Rushmore",
+    "type": "monument",
+    "elevation_meters": 1745,
+    "icon_svg": "<svg viewBox='0 0 24 24' fill='currentColor'><path d='M2 18h20l-10-14z'/></svg>",
+    "image_url": "https://images.unsplash.com/photo-1562984042-b6cd6e8ce543?w=200&h=200&fit=crop&q=80"
+  },
+  {
+    "name": "Denver, Colorado",
+    "type": "city",
+    "elevation_meters": 1609,
+    "icon_svg": "<svg viewBox='0 0 24 24' fill='currentColor'><path d='M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3z'/></svg>",
+    "image_url": "https://images.unsplash.com/photo-1619856699906-09e1f58c98b1?w=200&h=200&fit=crop&q=80"
+  },
+  {
+    "name": "Machu Picchu",
+    "type": "site",
+    "elevation_meters": 2430,
+    "icon_svg": "<svg viewBox='0 0 24 24' fill='currentColor'><path d='M3 19l7-10 4 6 7-10v14H3z'/></svg>",
+    "image_url": "https://images.unsplash.com/photo-1587595431973-160d0d94add1?w=200&h=200&fit=crop&q=80"
+  },
+  {
+    "name": "Half Dome, Yosemite",
+    "type": "mountain",
+    "elevation_meters": 2694,
+    "icon_svg": "<svg viewBox='0 0 24 24' fill='currentColor'><path d='M3 20l9-16 9 16H3z'/></svg>",
+    "image_url": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=200&h=200&fit=crop&q=80"
+  },
+  {
+    "name": "Mount Fuji Base",
+    "type": "mountain",
+    "elevation_meters": 3000,
+    "icon_svg": "<svg viewBox='0 0 24 24' fill='currentColor'><path d='M12 2L2 20h20L12 2z'/></svg>",
+    "image_url": "https://images.unsplash.com/photo-1490806843957-31f4c9a91c65?w=200&h=200&fit=crop&q=80"
+  },
+  {
+    "name": "Mount Hood",
+    "type": "mountain",
+    "elevation_meters": 3429,
+    "icon_svg": "<svg viewBox='0 0 24 24' fill='currentColor'><path d='M12 1L2 21h20L12 1z'/></svg>",
+    "image_url": "https://images.unsplash.com/photo-1519331379826-f10be5486c6f?w=200&h=200&fit=crop&q=80"
+  },
+  {
+    "name": "Mount Fuji Summit",
+    "type": "mountain",
+    "elevation_meters": 3776,
+    "icon_svg": "<svg viewBox='0 0 24 24' fill='currentColor'><path d='M12 2L2 20h20L12 2z'/><circle cx='12' cy='6' r='1' fill='white'/></svg>",
+    "image_url": "https://images.unsplash.com/photo-1578637387939-43c05296d2f5?w=200&h=200&fit=crop&q=80"
+  },
+  {
+    "name": "Jungfrau, Swiss Alps",
+    "type": "mountain",
+    "elevation_meters": 4158,
+    "icon_svg": "<svg viewBox='0 0 24 24' fill='currentColor'><path d='M8 18l4-10 4 10H8z'/><path d='M4 18l8-15 8 15H4z' fill='none' stroke='currentColor'/></svg>",
+    "image_url": "https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=200&h=200&fit=crop&q=80"
+  },
+  {
+    "name": "Mont Blanc",
+    "type": "mountain",
+    "elevation_meters": 4808,
+    "icon_svg": "<svg viewBox='0 0 24 24' fill='currentColor'><path d='M12 1L3 19h18L12 1z'/><path d='M12 1l-2 6h4l-2-6z' fill='white'/></svg>",
+    "image_url": "https://images.unsplash.com/photo-1608974906156-73485609ba79?w=200&h=200&fit=crop&q=80"
+  },
+  {
+    "name": "Mount Whitney",
+    "type": "mountain",
+    "elevation_meters": 4421,
+    "icon_svg": "<svg viewBox='0 0 24 24' fill='currentColor'><path d='M12 2L4 18h16L12 2z'/></svg>",
+    "image_url": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=200&h=200&fit=crop&q=80"
+  },
+  {
+    "name": "Mount Kilimanjaro",
+    "type": "mountain",
+    "elevation_meters": 5895,
+    "icon_svg": "<svg viewBox='0 0 24 24' fill='currentColor'><path d='M12 2L2 20h20L12 2z'/><circle cx='12' cy='5' r='2' fill='white'/></svg>",
+    "image_url": "https://images.unsplash.com/photo-1589553416260-f586c8f1514f?w=200&h=200&fit=crop&q=80"
+  },
+  {
+    "name": "Mount Elbrus",
+    "type": "mountain",
+    "elevation_meters": 5642,
+    "icon_svg": "<svg viewBox='0 0 24 24' fill='currentColor'><path d='M7 20l5-14 5 14H7z'/></svg>",
+    "image_url": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=200&h=200&fit=crop&q=80"
+  },
+  {
+    "name": "Mount McKinley (Denali)",
+    "type": "mountain",
+    "elevation_meters": 6190,
+    "icon_svg": "<svg viewBox='0 0 24 24' fill='currentColor'><path d='M12 1L1 21h22L12 1z'/></svg>",
+    "image_url": "https://images.unsplash.com/photo-1594299249897-e1d6906d98e4?w=200&h=200&fit=crop&q=80"
+  },
+  {
+    "name": "Aconcagua",
+    "type": "mountain",
+    "elevation_meters": 6961,
+    "icon_svg": "<svg viewBox='0 0 24 24' fill='currentColor'><path d='M12 1L2 21h20L12 1z'/><path d='M12 1l-3 8h6l-3-8z' fill='white'/></svg>",
+    "image_url": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=200&h=200&fit=crop&q=80"
+  },
+  {
+    "name": "Mount Everest",
+    "type": "mountain",
+    "elevation_meters": 8849,
+    "icon_svg": "<svg viewBox='0 0 24 24' fill='currentColor'><path d='M12 1L2 22h20L12 1z'/><path d='M12 1l-4 10h8l-4-10z' fill='white'/></svg>",
+    "image_url": "https://images.unsplash.com/photo-1608219992759-8d74ed8d76eb?w=200&h=200&fit=crop&q=80"
+  }
+]

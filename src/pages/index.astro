@@ -1,0 +1,198 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ElevationGauge from '../components/ElevationGauge.astro';
+import LandmarkComparison from '../components/LandmarkComparison.astro';
+import OfflineIndicator from '../components/OfflineIndicator.astro';
+---
+
+<Layout title="Find My Elevation">
+  <div class="max-w-2xl mx-auto px-4 flex flex-col items-center gap-6 text-center min-h-screen">
+    <header class="text-center py-6 w-full">
+      <h1 class="text-4xl font-bold text-primary mb-2">Find My Elevation</h1>
+      <p class="text-base text-on-surface-variant">Instantly see your current elevation — even offline</p>
+    </header>
+
+    <main id="main-content">
+      <div class="text-center w-full max-w-lg mx-auto p-6 bg-surface rounded-3xl shadow-lg">
+        <div id="elevation-content">
+          <div class="elevation-loading">
+            <p>Requesting location permission...</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="gauge-container" class="w-full max-w-md mx-auto flex justify-center py-4" style="display: none;">
+        <ElevationGauge />
+      </div>
+
+      <div id="landmark-container">
+        <LandmarkComparison />
+      </div>
+    </main>
+  </div>
+
+  <OfflineIndicator />
+</Layout>
+
+<script>
+  import { getElevationWithProgress } from '../lib/elevation/detector';
+  import { metersToFeet, formatElevation } from '../lib/utils/units';
+  import { getUnitPreference, setUnitPreference } from '../lib/storage/preferences';
+
+  // State
+  let currentElevation: number | null = null;
+  let currentUnit: 'meters' | 'feet' = getUnitPreference();
+
+  // DOM elements
+  const elevationContent = document.getElementById('elevation-content');
+
+  // Update loading status
+  function showStatus(message: string) {
+    if (elevationContent) {
+      elevationContent.innerHTML = `
+        <div class="h-[120px] flex items-center justify-center">
+          <p class="text-on-surface">${message}</p>
+        </div>
+      `;
+    }
+  }
+
+  // Show error
+  function showError(message: string) {
+    if (elevationContent) {
+      elevationContent.innerHTML = `
+        <div class="text-center p-4 bg-red-50 text-red-600 rounded-lg mt-4">
+          <p class="font-bold">Unable to get elevation</p>
+          <p class="mt-2">${message}</p>
+          <button class="mt-4 px-6 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary-light transition" onclick="location.reload()">
+            Try Again
+          </button>
+        </div>
+      `;
+    }
+  }
+
+  // Display elevation
+  function displayElevation(elevationMeters: number) {
+    currentElevation = elevationMeters;
+
+    const displayValue = currentUnit === 'feet'
+      ? metersToFeet(elevationMeters)
+      : elevationMeters;
+
+    const unitSuffix = currentUnit === 'feet' ? 'ft' : 'm';
+
+    if (elevationContent) {
+      elevationContent.innerHTML = `
+        <div>
+          <div class="text-8xl font-bold text-primary leading-tight my-2">
+            ${formatElevation(displayValue)}${unitSuffix}
+          </div>
+          <div class="mt-4 w-full flex justify-center">
+            <div class="units-toggle flex gap-2 bg-surface-variant p-1 rounded-lg">
+              <button
+                class="px-8 py-4 min-h-[64px] min-w-[140px] rounded-lg font-semibold text-xl transition-all ${currentUnit === 'feet' ? 'bg-primary text-white shadow-md' : 'bg-transparent text-on-surface-variant hover:bg-surface'}"
+                data-unit="feet"
+              >
+                Feet
+              </button>
+              <button
+                class="px-8 py-4 min-h-[64px] min-w-[140px] rounded-lg font-semibold text-xl transition-all ${currentUnit === 'meters' ? 'bg-primary text-white shadow-md' : 'bg-transparent text-on-surface-variant hover:bg-surface'}"
+                data-unit="meters"
+              >
+                Meters
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      // Add event listeners for unit toggle
+      const toggleButtons = elevationContent.querySelectorAll('.units-toggle button');
+      toggleButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const unit = button.getAttribute('data-unit') as 'meters' | 'feet';
+          currentUnit = unit;
+          setUnitPreference(unit);
+          if (currentElevation !== null) {
+            displayElevation(currentElevation);
+
+            // Update gauge with new unit
+            if ((window as any).ElevationGauge) {
+              const gauge = new (window as any).ElevationGauge();
+              gauge.update({
+                elevation: currentElevation,
+                unit: currentUnit
+              });
+            }
+          }
+        });
+      });
+    }
+
+    // Show and update gauge
+    const gaugeContainer = document.getElementById('gauge-container');
+    if (gaugeContainer && (window as any).ElevationGauge) {
+      gaugeContainer.style.display = 'block';
+
+      // Wait for gauge to be in DOM, then update
+      setTimeout(() => {
+        const gauge = new (window as any).ElevationGauge();
+        gauge.update({
+          elevation: elevationMeters,
+          unit: currentUnit
+        });
+      }, 100);
+    }
+
+    // Show landmark comparison (async, non-blocking)
+    setTimeout(() => {
+      if ((window as any).LandmarkDisplay) {
+        const landmarkDisplay = new (window as any).LandmarkDisplay();
+        landmarkDisplay.display({
+          elevation: elevationMeters,
+          unit: currentUnit
+        });
+      }
+    }, 500);
+  }
+
+  // Main initialization
+  async function init() {
+    try {
+      showStatus('Requesting location permission...');
+
+      const result = await getElevationWithProgress((status) => {
+        showStatus(status);
+      });
+
+      console.log('Elevation result:', result);
+
+      // Display elevation
+      displayElevation(result.elevation);
+
+      // Show additional info
+      const sourceLabel = result.source === 'gps' ? 'GPS' :
+                         result.source === 'cache' ? 'Cached data' :
+                         'Network API';
+
+      console.log(`Source: ${sourceLabel}, Accuracy: ±${Math.round(result.accuracy)}m`);
+
+    } catch (error: any) {
+      console.error('Elevation detection failed:', error);
+
+      let userMessage = error.message || 'An unknown error occurred.';
+
+      if (error.message && error.message.includes('permission denied')) {
+        userMessage = 'Location permission denied. Please enable location access in your browser settings and reload the page.';
+      } else if (error.message && error.message.includes('not supported')) {
+        userMessage = 'Your browser or device does not support location services.';
+      }
+
+      showError(userMessage);
+    }
+  }
+
+  // Start the app
+  init();
+</script>

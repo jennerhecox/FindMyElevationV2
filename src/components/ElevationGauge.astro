@@ -1,0 +1,233 @@
+---
+// SVG Elevation Gauge Component
+// Displays a vertical gauge with dynamic scale
+---
+
+<div class="w-full max-w-[200px] mx-auto">
+  <svg
+    id="elevation-gauge"
+    viewBox="0 0 200 400"
+    class="w-full h-auto drop-shadow-md"
+    role="img"
+    aria-label="Elevation gauge"
+  >
+    <!-- Background -->
+    <rect x="0" y="0" width="200" height="400" fill="var(--md-sys-color-surface-variant)" rx="8" />
+
+    <!-- Scale lines and labels will be added dynamically -->
+    <g id="gauge-scale"></g>
+
+    <!-- Sea level reference line -->
+    <line
+      id="sea-level-line"
+      x1="40"
+      x2="170"
+      y1="200"
+      y2="200"
+      stroke="var(--md-sys-color-primary)"
+      stroke-width="2"
+      stroke-dasharray="4 4"
+      opacity="0.6"
+    />
+
+    <!-- Indicator marker (animated) -->
+    <g id="elevation-indicator" transform="translate(100, 200)" opacity="0">
+      <circle
+        cx="0"
+        cy="0"
+        r="8"
+        fill="var(--md-sys-color-primary)"
+        stroke="var(--md-sys-color-on-primary)"
+        stroke-width="2"
+      />
+      <path
+        d="M -12 0 L 0 -12 L 12 0 Z"
+        fill="var(--md-sys-color-primary)"
+      />
+    </g>
+
+    <!-- Center line -->
+    <line
+      x1="100"
+      y1="50"
+      x2="100"
+      y2="350"
+      stroke="var(--md-sys-color-outline)"
+      stroke-width="1"
+      opacity="0.3"
+    />
+  </svg>
+</div>
+
+<style>
+  /* Keep animation styles */
+  #elevation-indicator {
+    transition: transform 500ms cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 300ms ease-out;
+  }
+
+  #elevation-indicator.active {
+    opacity: 1 !important;
+  }
+</style>
+
+<script>
+  interface GaugeOptions {
+    elevation: number; // in meters
+    minElevation?: number;
+    maxElevation?: number;
+    unit?: 'meters' | 'feet';
+  }
+
+  class ElevationGauge {
+    private svg: SVGElement;
+    private indicator: SVGElement;
+    private scaleGroup: SVGElement;
+    private seaLevelLine: SVGElement;
+
+    constructor(svgId: string = 'elevation-gauge') {
+      this.svg = document.getElementById(svgId) as SVGElement;
+      this.indicator = document.getElementById('elevation-indicator') as SVGElement;
+      this.scaleGroup = document.getElementById('gauge-scale') as SVGElement;
+      this.seaLevelLine = document.getElementById('sea-level-line') as SVGElement;
+    }
+
+    /**
+     * Update gauge with new elevation
+     */
+    public update(options: GaugeOptions): void {
+      const { elevation, unit = 'meters' } = options;
+
+      // Calculate range (±500m window around current elevation)
+      const range = 500;
+      const minElevation = options.minElevation ?? elevation - range;
+      const maxElevation = options.maxElevation ?? elevation + range;
+
+      // Draw scale with unit
+      this.drawScale(minElevation, maxElevation, unit);
+
+      // Position sea level line
+      this.positionSeaLevel(minElevation, maxElevation);
+
+      // Animate indicator to position
+      this.animateIndicator(elevation, minElevation, maxElevation);
+    }
+
+    /**
+     * Draw scale lines and labels
+     */
+    private drawScale(min: number, max: number, unit: 'meters' | 'feet' = 'meters'): void {
+      // Clear existing scale
+      this.scaleGroup.innerHTML = '';
+
+      const gaugeHeight = 300; // pixels (from y=50 to y=350)
+      const range = max - min;
+      const step = this.calculateStep(range);
+
+      // Debug logging
+      console.log('Gauge scale:', { min, max, range, step, unit });
+
+      // Round min to nearest step
+      const startValue = Math.floor(min / step) * step;
+      console.log('Start value:', startValue);
+
+      for (let currentValue = startValue; currentValue <= max; currentValue += step) {
+        const value = currentValue;
+        const y = this.elevationToY(value, min, max, gaugeHeight);
+
+        // Major tick line
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', '40');
+        line.setAttribute('x2', '55');
+        line.setAttribute('y1', y.toString());
+        line.setAttribute('y2', y.toString());
+        line.setAttribute('stroke', 'var(--md-sys-color-outline)');
+        line.setAttribute('stroke-width', '1');
+        line.setAttribute('opacity', '0.5');
+        this.scaleGroup.appendChild(line);
+
+        // Label with correct unit
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('x', '35');
+        text.setAttribute('y', (y + 4).toString());
+        text.setAttribute('text-anchor', 'end');
+        text.setAttribute('font-size', '12');
+        text.setAttribute('fill', '#FFFFFF');
+        text.setAttribute('font-weight', '600');
+        const unitLabel = unit === 'feet' ? 'ft' : 'm';
+        const labelValue = Math.round(value);
+        text.textContent = labelValue.toString() + unitLabel;
+        this.scaleGroup.appendChild(text);
+      }
+    }
+
+    /**
+     * Calculate appropriate step size for scale
+     */
+    private calculateStep(range: number): number {
+      if (range <= 100) return 10;
+      if (range <= 500) return 50;
+      if (range <= 1000) return 100;
+      if (range <= 2000) return 200;
+      return 500;
+    }
+
+    /**
+     * Convert elevation value to Y coordinate
+     */
+    private elevationToY(elevation: number, min: number, max: number, height: number): number {
+      const gaugeTop = 50;
+      const normalized = (elevation - min) / (max - min);
+      return gaugeTop + height - (normalized * height); // Invert (high elevation at top)
+    }
+
+    /**
+     * Position sea level reference line
+     */
+    private positionSeaLevel(min: number, max: number): void {
+      // Find or create sea level text element
+      let seaText = document.getElementById('sea-level-text') as SVGTextElement;
+
+      if (!seaText) {
+        seaText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        seaText.id = 'sea-level-text';
+        seaText.setAttribute('font-size', '10');
+        seaText.setAttribute('fill', 'var(--md-sys-color-on-surface-variant)');
+        seaText.setAttribute('opacity', '0.8');
+        seaText.textContent = 'Sea';
+        this.svg.appendChild(seaText);
+      }
+
+      if (min <= 0 && max >= 0) {
+        // Sea level is visible in current range
+        const y = this.elevationToY(0, min, max, 300);
+        this.seaLevelLine.setAttribute('y1', y.toString());
+        this.seaLevelLine.setAttribute('y2', y.toString());
+        this.seaLevelLine.style.display = 'block';
+
+        // Position text at sea level (0m)
+        seaText.setAttribute('x', '175');
+        seaText.setAttribute('y', (y + 4).toString());
+        seaText.style.display = 'block';
+      } else {
+        // Sea level not in range
+        this.seaLevelLine.style.display = 'none';
+        seaText.style.display = 'none';
+      }
+    }
+
+    /**
+     * Animate indicator to position
+     */
+    private animateIndicator(elevation: number, min: number, max: number): void {
+      const y = this.elevationToY(elevation, min, max, 300);
+
+      // Animate
+      this.indicator.setAttribute('transform', `translate(100, ${y})`);
+      this.indicator.classList.add('active');
+    }
+  }
+
+  // Export for use in main page
+  (window as any).ElevationGauge = ElevationGauge;
+</script>

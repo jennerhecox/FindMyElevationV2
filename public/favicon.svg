@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+    <rect width="128" height="128" rx="24" fill="#006C4C"/>
+    <path d="M64 25L95 80H33L64 25Z" fill="#89F8C7" stroke="#FFFFFF" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M40 80L55 58L70 70L85 48L110 80H40Z" fill="#00513B" stroke="#FFFFFF" stroke-width="2" stroke-linejoin="round"/>
+    <circle cx="64" cy="75" r="6" fill="#FFFFFF"/>
+    <text x="64" y="110" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#FFFFFF" text-anchor="middle" opacity="0.8">
+        ELEVATION
+    </text>
+</svg>

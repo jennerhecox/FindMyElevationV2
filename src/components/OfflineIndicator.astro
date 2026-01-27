@@ -1,0 +1,59 @@
+---
+// Offline Indicator Component
+// Shows when the user is offline
+---
+
+<div
+  id="offline-indicator"
+  class="hidden fixed bottom-4 left-1/2 -translate-x-1/2 px-6 py-3 bg-surface text-on-surface rounded-lg shadow-xl text-sm flex items-center gap-2 z-[1000] transition-all duration-300"
+  role="status"
+  aria-live="polite"
+>
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="flex-shrink-0">
+    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-2h2v2h-2zm0-4V7h2v6h-2z"/>
+  </svg>
+  <span>You're offline. Elevation data may be cached.</span>
+</div>
+
+<script>
+  class OfflineIndicator {
+    private element: HTMLElement;
+
+    constructor() {
+      this.element = document.getElementById('offline-indicator') as HTMLElement;
+      this.init();
+    }
+
+    private init(): void {
+      // Initial state
+      this.updateStatus();
+
+      // Listen for online/offline events
+      window.addEventListener('online', () => this.updateStatus());
+      window.addEventListener('offline', () => this.updateStatus());
+    }
+
+    private updateStatus(): void {
+      if (!navigator.onLine) {
+        this.show();
+      } else {
+        this.hide();
+      }
+    }
+
+    private show(): void {
+      this.element.classList.remove('hidden');
+    }
+
+    private hide(): void {
+      this.element.classList.add('hidden');
+    }
+  }
+
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => new OfflineIndicator());
+  } else {
+    new OfflineIndicator();
+  }
+</script>
