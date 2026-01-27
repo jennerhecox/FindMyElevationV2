@@ -133,6 +133,49 @@
     }
 
     /**
+     * Display with a pre-selected landmark
+     */
+    public displayWithLandmark(options: { elevation: number; unit?: 'meters' | 'feet'; landmark: any }): void {
+      const { elevation, unit = 'meters', landmark } = options;
+
+      if (!landmark) {
+        this.container.style.display = 'none';
+        return;
+      }
+
+      // Display icon based on landmark type
+      const iconSvg = this.getIconForType(landmark.type || 'site');
+      this.iconElement.innerHTML = iconSvg;
+      this.nameElement.textContent = landmark.name;
+
+      const comparisonMessage = formatComparisonMessage(elevation, landmark, unit);
+
+      // Format landmark elevation in current unit
+      const landmarkElevation = unit === 'feet'
+        ? metersToFeet(landmark.elevation_meters)
+        : landmark.elevation_meters;
+      const unitLabel = unit === 'feet' ? 'ft' : 'm';
+      const elevationText = `${formatElevation(landmarkElevation)}${unitLabel} elevation`;
+
+      this.elevationElement.innerHTML = `
+        <div>${comparisonMessage}</div>
+        <div style="margin-top: 0.25rem; font-size: 0.9em; opacity: 0.8;">${elevationText}</div>
+      `;
+
+      // Show with animation
+      this.container.style.display = 'flex';
+
+      // Trigger animation after a short delay
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          this.container.classList.add('visible');
+        });
+      });
+
+      console.log('Landmark comparison:', landmark);
+    }
+
+    /**
      * Hide landmark comparison
      */
     public hide(): void {

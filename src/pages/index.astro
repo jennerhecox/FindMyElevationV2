@@ -7,9 +7,14 @@ import OfflineIndicator from '../components/OfflineIndicator.astro';
 
 <Layout title="Find My Elevation">
   <div class="max-w-2xl mx-auto px-4 flex flex-col items-center gap-6 text-center min-h-screen">
-    <header class="text-center py-6 w-full">
-      <h1 class="text-4xl font-bold text-primary mb-2">Find My Elevation</h1>
-      <p class="text-base text-on-surface-variant">Instantly see your current elevation — even offline</p>
+    <header class="text-center py-3 w-full">
+      <h1 class="text-4xl font-bold text-primary flex items-center justify-center gap-3">
+        Find My Elevation
+        <svg class="w-10 h-10" viewBox="0 0 128 128">
+          <path d="M64 25L95 80H33L64 25Z" fill="#89F8C7" stroke="#006C4C" stroke-width="3" stroke-linejoin="round"/>
+          <path d="M40 80L55 58L70 70L85 48L110 80H40Z" fill="#006C4C" stroke="#006C4C" stroke-width="2" stroke-linejoin="round"/>
+        </svg>
+      </h1>
     </header>
 
     <main id="main-content">
@@ -38,10 +43,13 @@ import OfflineIndicator from '../components/OfflineIndicator.astro';
   import { getElevationWithProgress } from '../lib/elevation/detector';
   import { metersToFeet, formatElevation } from '../lib/utils/units';
   import { getUnitPreference, setUnitPreference } from '../lib/storage/preferences';
+  import { getAllLandmarks } from '../lib/landmarks/data';
+  import { findNearbyLandmarks } from '../lib/landmarks/matcher';
 
   // State
   let currentElevation: number | null = null;
   let currentUnit: 'meters' | 'feet' = getUnitPreference();
+  let currentLandmark: any = null;
 
   // DOM elements
   const elevationContent = document.getElementById('elevation-content');
@@ -115,19 +123,33 @@ import OfflineIndicator from '../components/OfflineIndicator.astro';
           currentUnit = unit;
           setUnitPreference(unit);
           if (currentElevation !== null) {
+            // Re-render the elevation display (but keep the same landmark)
+            const savedLandmark = currentLandmark;
             displayElevation(currentElevation);
+            currentLandmark = savedLandmark; // Restore the same landmark
 
-            // Update gauge with new unit
+            // Update gauge with new unit and same landmark
             if ((window as any).ElevationGauge) {
               const gauge = new (window as any).ElevationGauge();
               gauge.update({
                 elevation: currentElevation,
-                unit: currentUnit
+                unit: currentUnit,
+                landmark: currentLandmark
               });
             }
           }
         });
       });
+    }
+
+    // Select a landmark first (so both gauge and display use the same one)
+    const landmarks = getAllLandmarks();
+    const nearbyLandmarks = findNearbyLandmarks(elevationMeters, landmarks, 15, 1000);
+    if (nearbyLandmarks.length > 0) {
+      const randomIndex = Math.floor(Math.random() * nearbyLandmarks.length);
+      currentLandmark = nearbyLandmarks[randomIndex];
+    } else {
+      currentLandmark = null;
     }
 
     // Show and update gauge
@@ -140,18 +162,20 @@ import OfflineIndicator from '../components/OfflineIndicator.astro';
         const gauge = new (window as any).ElevationGauge();
         gauge.update({
           elevation: elevationMeters,
-          unit: currentUnit
+          unit: currentUnit,
+          landmark: currentLandmark
         });
       }, 100);
     }
 
     // Show landmark comparison (async, non-blocking)
     setTimeout(() => {
-      if ((window as any).LandmarkDisplay) {
+      if ((window as any).LandmarkDisplay && currentLandmark) {
         const landmarkDisplay = new (window as any).LandmarkDisplay();
-        landmarkDisplay.display({
+        landmarkDisplay.displayWithLandmark({
           elevation: elevationMeters,
-          unit: currentUnit
+          unit: currentUnit,
+          landmark: currentLandmark
         });
       }
     }, 500);

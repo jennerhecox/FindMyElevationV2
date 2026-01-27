@@ -6,13 +6,13 @@
 <div class="w-full max-w-lg mx-auto">
   <svg
     id="elevation-gauge"
-    viewBox="0 0 200 400"
+    viewBox="0 0 200 280"
     class="w-full h-auto drop-shadow-md"
     role="img"
     aria-label="Elevation gauge"
   >
     <!-- Background -->
-    <rect x="0" y="0" width="200" height="400" fill="var(--md-sys-color-surface-variant)" rx="8" />
+    <rect x="0" y="0" width="200" height="280" fill="var(--md-sys-color-surface-variant)" rx="8" />
 
     <!-- Scale lines and labels will be added dynamically -->
     <g id="gauge-scale"></g>
@@ -22,36 +22,43 @@
       id="sea-level-line"
       x1="40"
       x2="170"
-      y1="200"
-      y2="200"
+      y1="140"
+      y2="140"
       stroke="var(--md-sys-color-primary)"
       stroke-width="2"
       stroke-dasharray="4 4"
       opacity="0.6"
     />
 
-    <!-- Indicator marker (animated) -->
-    <g id="elevation-indicator" transform="translate(100, 200)" opacity="0">
-      <circle
-        cx="0"
-        cy="0"
-        r="8"
-        fill="var(--md-sys-color-primary)"
-        stroke="var(--md-sys-color-on-primary)"
-        stroke-width="2"
-      />
-      <path
-        d="M -12 0 L 0 -12 L 12 0 Z"
-        fill="var(--md-sys-color-primary)"
-      />
+    <!-- Indicator marker (animated) - Human icon -->
+    <g id="elevation-indicator" transform="translate(80, 140)" opacity="0">
+      <!-- Human icon - head -->
+      <circle cx="0" cy="-10" r="5" fill="var(--md-sys-color-primary)" stroke="var(--md-sys-color-on-primary)" stroke-width="1.5"/>
+      <!-- Human icon - body, arms, legs -->
+      <path d="M 0 -5 L 0 5 M -6 0 L 6 0 M 0 5 L -5 12 M 0 5 L 5 12"
+            stroke="var(--md-sys-color-primary)"
+            stroke-width="3"
+            stroke-linecap="round"
+            fill="none"/>
     </g>
+
+    <!-- Landmark indicator (to the right of human) -->
+    <g id="landmark-indicator" transform="translate(130, 140)" opacity="0">
+      <!-- Landmark icon placeholder - will be replaced dynamically -->
+      <rect x="-12" y="-12" width="24" height="24" rx="4" fill="var(--md-sys-color-primary)" opacity="0.2"/>
+      <text id="landmark-icon-text" x="0" y="5" text-anchor="middle" font-size="16" fill="var(--md-sys-color-primary)">🏔</text>
+      <text id="landmark-name-text" x="0" y="22" text-anchor="middle" font-size="8" fill="var(--md-sys-color-on-surface-variant)" opacity="0.9"></text>
+    </g>
+
+    <!-- Connection line between human and landmark -->
+    <line id="comparison-line" x1="80" y1="140" x2="130" y2="140" stroke="var(--md-sys-color-outline)" stroke-width="1" stroke-dasharray="2 2" opacity="0"/>
 
     <!-- Center line -->
     <line
       x1="100"
-      y1="50"
+      y1="35"
       x2="100"
-      y2="350"
+      y2="245"
       stroke="var(--md-sys-color-outline)"
       stroke-width="1"
       opacity="0.3"
@@ -61,7 +68,8 @@
 
 <style>
   /* Keep animation styles */
-  #elevation-indicator {
+  #elevation-indicator,
+  #landmark-indicator {
     transition: transform 500ms cubic-bezier(0.4, 0, 0.2, 1),
                 opacity 300ms ease-out;
   }
@@ -69,14 +77,25 @@
   #elevation-indicator.active {
     opacity: 1 !important;
   }
+
+  #comparison-line {
+    transition: all 500ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
 </style>
 
 <script>
+  interface LandmarkData {
+    name: string;
+    elevation_meters: number;
+    type?: string;
+  }
+
   interface GaugeOptions {
     elevation: number; // in meters
     minElevation?: number;
     maxElevation?: number;
     unit?: 'meters' | 'feet';
+    landmark?: LandmarkData;
   }
 
   class ElevationGauge {
@@ -84,19 +103,23 @@
     private indicator: SVGElement;
     private scaleGroup: SVGElement;
     private seaLevelLine: SVGElement;
+    private landmarkIndicator: SVGElement;
+    private comparisonLine: SVGElement;
 
     constructor(svgId: string = 'elevation-gauge') {
       this.svg = document.getElementById(svgId) as SVGElement;
       this.indicator = document.getElementById('elevation-indicator') as SVGElement;
       this.scaleGroup = document.getElementById('gauge-scale') as SVGElement;
       this.seaLevelLine = document.getElementById('sea-level-line') as SVGElement;
+      this.landmarkIndicator = document.getElementById('landmark-indicator') as SVGElement;
+      this.comparisonLine = document.getElementById('comparison-line') as SVGElement;
     }
 
     /**
      * Update gauge with new elevation
      */
     public update(options: GaugeOptions): void {
-      const { elevation, unit = 'meters' } = options;
+      const { elevation, unit = 'meters', landmark } = options;
 
       // Calculate range (±500m window around current elevation)
       const range = 500;
@@ -111,6 +134,11 @@
 
       // Animate indicator to position
       this.animateIndicator(elevation, minElevation, maxElevation);
+
+      // Position landmark indicator if provided
+      if (landmark) {
+        this.positionLandmark(landmark, elevation, minElevation, maxElevation);
+      }
     }
 
     /**
@@ -120,7 +148,7 @@
       // Clear existing scale
       this.scaleGroup.innerHTML = '';
 
-      const gaugeHeight = 300; // pixels (from y=50 to y=350)
+      const gaugeHeight = 210; // pixels (from y=35 to y=245)
       const range = max - min;
       const step = this.calculateStep(range);
 
@@ -177,7 +205,7 @@
      * Convert elevation value to Y coordinate
      */
     private elevationToY(elevation: number, min: number, max: number, height: number): number {
-      const gaugeTop = 50;
+      const gaugeTop = 35;
       const normalized = (elevation - min) / (max - min);
       return gaugeTop + height - (normalized * height); // Invert (high elevation at top)
     }
@@ -201,7 +229,7 @@
 
       if (min <= 0 && max >= 0) {
         // Sea level is visible in current range
-        const y = this.elevationToY(0, min, max, 300);
+        const y = this.elevationToY(0, min, max, 210);
         this.seaLevelLine.setAttribute('y1', y.toString());
         this.seaLevelLine.setAttribute('y2', y.toString());
         this.seaLevelLine.style.display = 'block';
@@ -221,11 +249,60 @@
      * Animate indicator to position
      */
     private animateIndicator(elevation: number, min: number, max: number): void {
-      const y = this.elevationToY(elevation, min, max, 300);
+      const y = this.elevationToY(elevation, min, max, 210);
 
-      // Animate
-      this.indicator.setAttribute('transform', `translate(100, ${y})`);
+      // Animate human indicator (positioned at x=80)
+      this.indicator.setAttribute('transform', `translate(80, ${y})`);
       this.indicator.classList.add('active');
+    }
+
+    /**
+     * Get emoji icon for landmark type
+     */
+    private getIconForType(type?: string): string {
+      const icons: Record<string, string> = {
+        mountain: '🏔',
+        tower: '🗼',
+        building: '🏢',
+        monument: '🗿',
+        natural: '🌲',
+        city: '🏛',
+        structure: '🌉',
+        site: '📍',
+      };
+      return icons[type || 'site'] || '📍';
+    }
+
+    /**
+     * Position landmark indicator
+     */
+    private positionLandmark(landmark: LandmarkData, userElevation: number, min: number, max: number): void {
+      const landmarkY = this.elevationToY(landmark.elevation_meters, min, max, 210);
+      const userY = this.elevationToY(userElevation, min, max, 210);
+
+      // Position landmark indicator at x=130
+      this.landmarkIndicator.setAttribute('transform', `translate(130, ${landmarkY})`);
+      this.landmarkIndicator.setAttribute('opacity', '1');
+
+      // Update landmark icon and name
+      const iconText = this.landmarkIndicator.querySelector('#landmark-icon-text');
+      const nameText = this.landmarkIndicator.querySelector('#landmark-name-text');
+
+      if (iconText) {
+        iconText.textContent = this.getIconForType(landmark.type);
+      }
+      if (nameText) {
+        // Truncate name if too long
+        const shortName = landmark.name.length > 12 ? landmark.name.substring(0, 10) + '...' : landmark.name;
+        nameText.textContent = shortName;
+      }
+
+      // Draw comparison line between human and landmark
+      this.comparisonLine.setAttribute('x1', '80');
+      this.comparisonLine.setAttribute('y1', userY.toString());
+      this.comparisonLine.setAttribute('x2', '130');
+      this.comparisonLine.setAttribute('y2', landmarkY.toString());
+      this.comparisonLine.setAttribute('opacity', '0.5');
     }
   }
 
