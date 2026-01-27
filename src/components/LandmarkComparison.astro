@@ -105,7 +105,7 @@
       this.iconElement.innerHTML = iconSvg;
       this.nameElement.textContent = closest.name;
 
-      const comparisonMessage = formatComparisonMessage(elevation, closest);
+      const comparisonMessage = formatComparisonMessage(elevation, closest, unit);
 
       // Format landmark elevation in current unit
       const landmarkElevation = unit === 'feet'

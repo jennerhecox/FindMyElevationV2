@@ -3,7 +3,7 @@
 // Displays a vertical gauge with dynamic scale
 ---
 
-<div class="w-full max-w-[200px] mx-auto">
+<div class="w-full max-w-lg mx-auto">
   <svg
     id="elevation-gauge"
     viewBox="0 0 200 400"
@@ -154,9 +154,10 @@
         text.setAttribute('font-size', '12');
         text.setAttribute('fill', '#FFFFFF');
         text.setAttribute('font-weight', '600');
+        // Convert to display unit for labels
+        const displayValue = unit === 'feet' ? Math.round(value * 3.28084) : Math.round(value);
         const unitLabel = unit === 'feet' ? 'ft' : 'm';
-        const labelValue = Math.round(value);
-        text.textContent = labelValue.toString() + unitLabel;
+        text.textContent = displayValue.toString() + unitLabel;
         this.scaleGroup.appendChild(text);
       }
     }

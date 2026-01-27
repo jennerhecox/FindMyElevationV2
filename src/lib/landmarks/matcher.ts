@@ -64,15 +64,23 @@ export function findNearbyLandmarks(
 /**
  * Format comparison message
  */
-export function formatComparisonMessage(elevation: number, landmark: Landmark): string {
+export function formatComparisonMessage(
+  elevation: number,
+  landmark: Landmark,
+  unit: 'meters' | 'feet' = 'meters'
+): string {
   const diff = elevation - landmark.elevation_meters;
   const absDiff = Math.abs(diff);
+
+  // Convert difference to display unit
+  const displayDiff = unit === 'feet' ? Math.round(absDiff * 3.28084) : Math.round(absDiff);
+  const unitLabel = unit === 'feet' ? 'ft' : 'm';
 
   if (absDiff < 10) {
     return `You are at about the same height as ${landmark.name}`;
   } else if (diff > 0) {
-    return `You are ${Math.round(absDiff)}m higher than ${landmark.name}`;
+    return `You are ${displayDiff}${unitLabel} higher than ${landmark.name}`;
   } else {
-    return `You are ${Math.round(absDiff)}m lower than ${landmark.name}`;
+    return `You are ${displayDiff}${unitLabel} lower than ${landmark.name}`;
   }
 }
