@@ -6,34 +6,95 @@ import OfflineIndicator from '../components/OfflineIndicator.astro';
 ---
 
 <Layout title="Find My Elevation">
-  <div class="max-w-2xl mx-auto px-4 flex flex-col items-center gap-6 text-center min-h-screen">
-    <header class="text-center py-3 w-full">
-      <h1 class="text-4xl font-bold text-primary flex items-center justify-center gap-3">
-        Find My Elevation
-        <svg class="w-10 h-10" viewBox="0 0 128 128">
-          <path d="M64 25L95 80H33L64 25Z" fill="#89F8C7" stroke="#006C4C" stroke-width="3" stroke-linejoin="round"/>
-          <path d="M40 80L55 58L70 70L85 48L110 80H40Z" fill="#006C4C" stroke="#006C4C" stroke-width="2" stroke-linejoin="round"/>
-        </svg>
-      </h1>
-    </header>
+  <!-- Desktop: 3-column grid with sidebar ads -->
+  <div class="max-w-6xl mx-auto px-4 min-h-screen">
+    <div class="md:grid md:grid-cols-[160px_1fr_160px] md:gap-6">
 
-    <main id="main-content">
-      <div class="text-center w-full max-w-lg mx-auto p-6 bg-surface rounded-3xl shadow-lg">
-        <div id="elevation-content">
-          <div class="elevation-loading">
-            <p>Requesting location permission...</p>
+      <!-- Left sidebar ad (desktop only) -->
+      <aside class="hidden md:block sticky top-4 self-start pt-20">
+        <ins class="adsbygoogle"
+          style="display:block"
+          data-ad-client="ca-pub-2699582258154063"
+          data-ad-slot="LEFT_AD_SLOT"
+          data-ad-format="vertical"
+          data-full-width-responsive="false"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </aside>
+
+      <!-- Main content (center column) -->
+      <div class="max-w-2xl mx-auto w-full flex flex-col items-center gap-3 text-center">
+        <header class="text-center py-2 w-full">
+          <h1 class="text-4xl font-bold text-primary flex items-center justify-center gap-3">
+            Find My Elevation
+            <svg class="w-10 h-10" viewBox="0 0 128 128">
+              <path d="M64 25L95 80H33L64 25Z" fill="#89F8C7" stroke="#006C4C" stroke-width="3" stroke-linejoin="round"/>
+              <path d="M40 80L55 58L70 70L85 48L110 80H40Z" fill="#006C4C" stroke="#006C4C" stroke-width="2" stroke-linejoin="round"/>
+            </svg>
+          </h1>
+        </header>
+
+        <main id="main-content">
+          <div class="text-center w-full max-w-lg mx-auto p-6 bg-surface rounded-3xl shadow-lg">
+            <div id="elevation-content">
+              <div class="elevation-loading">
+                <p>Requesting location permission...</p>
+              </div>
+            </div>
           </div>
-        </div>
+
+          <!-- Mobile ad: above gauge -->
+          <div class="md:hidden w-full max-w-lg mx-auto my-3">
+            <ins class="adsbygoogle"
+              style="display:block"
+              data-ad-client="ca-pub-2699582258154063"
+              data-ad-slot="MOBILE_TOP_AD_SLOT"
+              data-ad-format="horizontal"
+              data-full-width-responsive="true"></ins>
+            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+          </div>
+
+          <div id="gauge-container" class="w-full max-w-md mx-auto flex justify-center py-4" style="display: none;">
+            <ElevationGauge />
+          </div>
+
+          <div id="landmark-container">
+            <LandmarkComparison />
+          </div>
+
+          <!-- Mobile ads: bottom -->
+          <div class="md:hidden w-full max-w-lg mx-auto my-3">
+            <ins class="adsbygoogle"
+              style="display:block"
+              data-ad-client="ca-pub-2699582258154063"
+              data-ad-slot="MOBILE_BOTTOM_AD_SLOT_1"
+              data-ad-format="horizontal"
+              data-full-width-responsive="true"></ins>
+            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+          </div>
+          <div class="md:hidden w-full max-w-lg mx-auto my-3">
+            <ins class="adsbygoogle"
+              style="display:block"
+              data-ad-client="ca-pub-2699582258154063"
+              data-ad-slot="MOBILE_BOTTOM_AD_SLOT_2"
+              data-ad-format="horizontal"
+              data-full-width-responsive="true"></ins>
+            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+          </div>
+        </main>
       </div>
 
-      <div id="gauge-container" class="w-full max-w-md mx-auto flex justify-center py-4" style="display: none;">
-        <ElevationGauge />
-      </div>
+      <!-- Right sidebar ad (desktop only) -->
+      <aside class="hidden md:block sticky top-4 self-start pt-20">
+        <ins class="adsbygoogle"
+          style="display:block"
+          data-ad-client="ca-pub-2699582258154063"
+          data-ad-slot="RIGHT_AD_SLOT"
+          data-ad-format="vertical"
+          data-full-width-responsive="false"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </aside>
 
-      <div id="landmark-container">
-        <LandmarkComparison />
-      </div>
-    </main>
+    </div>
   </div>
 
   <OfflineIndicator />
@@ -58,7 +119,8 @@ import OfflineIndicator from '../components/OfflineIndicator.astro';
   function showStatus(message: string) {
     if (elevationContent) {
       elevationContent.innerHTML = `
-        <div class="h-[120px] flex items-center justify-center">
+        <div class="h-[120px] flex flex-col items-center justify-center gap-3">
+          <div class="w-10 h-10 border-4 border-surface-variant border-t-primary rounded-full animate-spin"></div>
           <p class="text-on-surface">${message}</p>
         </div>
       `;

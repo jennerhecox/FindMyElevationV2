@@ -98,6 +98,66 @@
     "image_url": "https://images.unsplash.com/photo-1582672060674-bc2bd808a8b5?w=200&h=200&fit=crop&q=80"
   },
   {
+    "name": "Chrysler Building, New York",
+    "type": "building",
+    "elevation_meters": 305,
+    "icon_svg": ""
+  },
+  {
+    "name": "Canton Tower, Guangzhou",
+    "type": "tower",
+    "elevation_meters": 610,
+    "icon_svg": ""
+  },
+  {
+    "name": "Bangalore, India",
+    "type": "city",
+    "elevation_meters": 914,
+    "icon_svg": ""
+  },
+  {
+    "name": "Salt Lake City, Utah",
+    "type": "city",
+    "elevation_meters": 1219,
+    "icon_svg": ""
+  },
+  {
+    "name": "Nairobi, Kenya",
+    "type": "city",
+    "elevation_meters": 1524,
+    "icon_svg": ""
+  },
+  {
+    "name": "Mexico City, Mexico",
+    "type": "city",
+    "elevation_meters": 1829,
+    "icon_svg": ""
+  },
+  {
+    "name": "Flagstaff, Arizona",
+    "type": "city",
+    "elevation_meters": 2134,
+    "icon_svg": ""
+  },
+  {
+    "name": "Lake Titicaca, Peru",
+    "type": "natural",
+    "elevation_meters": 2438,
+    "icon_svg": ""
+  },
+  {
+    "name": "Cusco, Peru",
+    "type": "city",
+    "elevation_meters": 2743,
+    "icon_svg": ""
+  },
+  {
+    "name": "Quito, Ecuador",
+    "type": "city",
+    "elevation_meters": 3048,
+    "icon_svg": ""
+  },
+  {
     "name": "Mount Rushmore",
     "type": "monument",
     "elevation_meters": 1745,
